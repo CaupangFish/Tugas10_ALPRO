@@ -1,0 +1,86 @@
+# No. 1 a.
+
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+from scipy import stats
+
+# Import data kedalam sebuah array NumPy
+data = np.genfromtxt('Lab 10 Data - data_rumah.txt', delimiter=',') # sesuaikan dengan nama file yang sudah ter upload
+
+x1 = data[:,0]
+x2 = data[:,1]
+y = data[:,2]
+
+xlabels = ['House Size (sq. ft.)', 'number of bedrooms']
+colors = ['red', 'green']
+fig, axs = plt.subplots(nrows=1,ncols=2)
+fig.set_size_inches(15, 8)
+
+for i, ax in enumerate(axs):
+    ax.scatter(data[:,i], y, c=colors[i])
+    ax.set_xlabel(xlabels[i], fontsize=14)
+    ax.set_title('Harga vs.' + xlabels[i], fontsize=18)
+    if i ==0:
+        ax.set_ylabel('house price ($)', fontsize=14)
+    ax.tick_params(labelsize=14)
+plt.tight_layout()
+plt.show()
+
+xone_params = stats.linregress(x1, y)
+xtwo_params = stats.linregress(x2, y)
+xone_params
+xtwo_params
+
+xone_slope = xone_params[0]
+xone_yint = xone_params[1]
+
+xtwo_slope = xtwo_params[0]
+xtwo_yint = xtwo_params[1]
+
+ys_fit_one = xone_yint + xone_slope * x1
+ys_fit_two = xtwo_yint + xtwo_slope * x2
+
+# Menempatkan array-array tersebut ke dalam sebuah list untuk dihitung
+ys_fits = [ys_fit_one, ys_fit_two]
+params = [xone_params, xtwo_params]
+
+# Menge - plot nilai-nilai di atas scatter plot untuk setiap relasinya
+# Menge - plot setiap masing-masing variabel (variabel penjelas terhadap variabel respons)
+xlabels = ['House Size (sq. ft.)', 'number of bedrooms']
+fig, axs = plt.subplots(nrows=1,ncols=2)
+fig.set_size_inches(15, 8)
+
+
+for i, ax in enumerate(axs):
+    ax.scatter(data[:, i], y, c=colors[i])
+    ax.plot(data[:, i], ys_fits[i], c='black')
+    ax.set_xlabel(xlabels[i], fontsize=14)
+    ax.set_title('house price ($) vs.' + xlabels[i], fontsize=18)
+    if i ==0:
+        ax.set_ylabel('house price ($)', fontsize=14)
+    ax.tick_params(labelsize=14)
+    
+    slope = str(round(params[i][0],3))
+    r_squared = str(round(params[i][2] ** 2,3))
+    p_value = str(round(params[i][3],3))
+    
+    ax.text(data[:, i].min(), y.max(),
+            'R^2: ' + r_squared + '\nslope: ' + slope + '\np-value: ' + p_value,
+            fontsize=14, verticalalignment='top')
+    
+plt.tight_layout()
+plt.show()
+
+
+
+    #a. berapa nilai $R^2$ untuk variabel House Size (sq. ft.) dan house price ($)?
+          # a. 0.731
+
+    #b. berapa nilai $R^2$ untuk variabel number of bedrooms dan house price ($)?
+          # b. 0.196
+
+#Kesimpulan : Merujuk dua grafik diatas, semakin banyak titik-titik yang mengenai garis hitam, maka semakin besar relasi antara variabel yang di validasi.
+      # Dari grafik itu, bisa kita ketahui bahwa ternyata relasi antara House Size (sq. ft.) dan house price ($) itu lebih terbukti 
+      # dibandingkan relasi antara number of bedrooms dan house price ($).
+
